@@ -52,16 +52,12 @@ export default new Vuex.Store({
     async loadSelectedStopSchedule({ commit, state }) {
       try {
         let { data, included } = await getStopSchedule(state.selectedStopId);
-        included.filter(e => e.type === 'prediction').forEach((prediction) => {
-          data.find(e => !!e.relationships.prediction.data && e.relationships.prediction.data.id === prediction.id).status = prediction.attributes.status;
-        });
-        included.filter(e => e.type === 'trip').forEach((trip) => {
-          data.find(e => !!e.relationships.trip.data && e.relationships.trip.data.id === trip.id).destination = trip.attributes.headsign;
-        });
         data = data.filter(e => !!e.attributes.departure_time).map(e => { 
           return {
             ...e,
-            platform: included.find(e => e.type === 'stop').attributes.platform_code
+            platform: included.find(e => e.type === 'stop').attributes.platform_code,
+            destination: e.relationships.trip.data ? included.filter(e => e.type === 'trip').find(trip => trip.id === e.relationships.trip.data.id).attributes.headsign : null,
+            status: e.relationships.prediction.data ? included.filter(e => e.type === 'prediction').find(prediction => prediction.id === e.relationships.prediction.data.id).attributes.status : null
           }
         });
         commit('SET_SELECTED_STOP_SCHEDULE', data);
