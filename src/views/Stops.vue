@@ -84,7 +84,11 @@ export default {
     this.$store.dispatch('loadCommuterRailStops').then(() => {
       this.isStopPickerLoading = false;
       this.$store.dispatch('loadSelectedStopSchedule');
-    })
+    });
+    setInterval(() => {
+      this.$store.dispatch('loadSelectedStopSchedule');
+      this.date = new Date();
+    }, 30000)
   },
   methods: {
     async handleStopChanged(stop) {
