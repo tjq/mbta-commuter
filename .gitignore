@@ -19,3 +19,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+src/services/api-key.js
+.firebase/hosting.ZGlzdA.cache
